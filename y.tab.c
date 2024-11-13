@@ -67,15 +67,19 @@
 
 
 /* First part of user prologue.  */
-#line 1 "calculator.y"
+#line 1 "emailfile.y"
 
-   #include<stdio.h>
-   #include<stdlib.h>
-   int yylex(void);
-   void yyerror(char *s); 
-  
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include "y.tab.h"
+    //#include "lex.yy.c"  // Remove unnecessary include for lex.yy.c
 
-#line 79 "y.tab.c"
+    extern int yylex(void);
+    void yyerror(char *s);
+    extern FILE *yyin;
+    int flag = 0;
+
+#line 83 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -120,10 +124,9 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     DIGIT = 258,                   /* DIGIT  */
-    PLUS = 259,                    /* PLUS  */
-    MINUS = 260,                   /* MINUS  */
-    MUL = 261,                     /* MUL  */
-    DIV = 262                      /* DIV  */
+    LETTER = 259,                  /* LETTER  */
+    ADDRESS = 260,                 /* ADDRESS  */
+    AT = 261                       /* AT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -133,10 +136,9 @@ extern int yydebug;
 #define YYerror 256
 #define YYUNDEF 257
 #define DIGIT 258
-#define PLUS 259
-#define MINUS 260
-#define MUL 261
-#define DIV 262
+#define LETTER 259
+#define ADDRESS 260
+#define AT 261
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -161,13 +163,11 @@ enum yysymbol_kind_t
   YYSYMBOL_YYerror = 1,                    /* error  */
   YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
   YYSYMBOL_DIGIT = 3,                      /* DIGIT  */
-  YYSYMBOL_PLUS = 4,                       /* PLUS  */
-  YYSYMBOL_MINUS = 5,                      /* MINUS  */
-  YYSYMBOL_MUL = 6,                        /* MUL  */
-  YYSYMBOL_DIV = 7,                        /* DIV  */
-  YYSYMBOL_YYACCEPT = 8,                   /* $accept  */
-  YYSYMBOL_A = 9,                          /* A  */
-  YYSYMBOL_expr = 10                       /* expr  */
+  YYSYMBOL_LETTER = 4,                     /* LETTER  */
+  YYSYMBOL_ADDRESS = 5,                    /* ADDRESS  */
+  YYSYMBOL_AT = 6,                         /* AT  */
+  YYSYMBOL_YYACCEPT = 7,                   /* $accept  */
+  YYSYMBOL_id = 8                          /* id  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -493,21 +493,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  4
+#define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   11
+#define YYLAST   13
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  8
+#define YYNTOKENS  7
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  3
+#define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  7
+#define YYNRULES  4
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  13
+#define YYNSTATES  15
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   262
+#define YYMAXUTOK   261
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -547,14 +547,14 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7
+       5,     6
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    14,    14,    15,    16,    17,    18,    19
+       0,    16,    16,    17,    18
 };
 #endif
 
@@ -570,8 +570,8 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "\"end of file\"", "error", "\"invalid token\"", "DIGIT", "PLUS",
-  "MINUS", "MUL", "DIV", "$accept", "A", "expr", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "DIGIT", "LETTER",
+  "ADDRESS", "AT", "$accept", "id", YY_NULLPTR
 };
 
 static const char *
@@ -581,7 +581,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-5)
+#define YYPACT_NINF (-4)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -595,8 +595,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       7,    -5,    11,    -4,    -5,     7,     7,     7,     7,     2,
-       2,    -5,    -5
+      -2,    -1,    -3,     4,     2,     1,     5,    -4,     3,     6,
+       7,    -4,     8,    -4,    -4
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -604,20 +604,20 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     7,     0,     2,     1,     0,     0,     0,     0,     3,
-       4,     5,     6
+       0,     0,     0,     0,     0,     0,     0,     1,     0,     0,
+       0,     4,     0,     2,     3
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,    -1
+      -4,    -4
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     2,     3
+       0,     3
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -625,34 +625,34 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       5,     6,     7,     8,     9,    10,    11,    12,     7,     8,
-       1,     4
+       5,     1,     2,     6,     7,     4,     8,     9,    11,    10,
+      12,     0,    13,    14
 };
 
 static const yytype_int8 yycheck[] =
 {
-       4,     5,     6,     7,     5,     6,     7,     8,     6,     7,
-       3,     0
+       3,     3,     4,     6,     0,     6,     4,     6,     5,     4,
+       4,    -1,     5,     5
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     9,    10,     0,     4,     5,     6,     7,    10,
-      10,    10,    10
+       0,     3,     4,     8,     6,     3,     6,     0,     4,     6,
+       4,     5,     4,     5,     5
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     8,     9,    10,    10,    10,    10,    10
+       0,     7,     8,     8,     8
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     3,     3,     3,     3,     1
+       0,     2,     4,     5,     4
 };
 
 
@@ -1115,44 +1115,26 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* A: expr  */
-#line 14 "calculator.y"
-      {printf("result=%d\n",yyval);return 0;}
+  case 2: /* id: LETTER AT LETTER ADDRESS  */
+#line 16 "emailfile.y"
+                                 { /* No additional output here */ }
 #line 1122 "y.tab.c"
     break;
 
-  case 3: /* expr: expr PLUS expr  */
-#line 15 "calculator.y"
-                       {yyval=yyvsp[-2]+yyvsp[0];}
+  case 3: /* id: LETTER DIGIT AT LETTER ADDRESS  */
+#line 17 "emailfile.y"
+                                         { /* No additional output here */ }
 #line 1128 "y.tab.c"
     break;
 
-  case 4: /* expr: expr MINUS expr  */
-#line 16 "calculator.y"
-                         {yyval=yyvsp[-2]-yyvsp[0];}
+  case 4: /* id: DIGIT AT LETTER ADDRESS  */
+#line 18 "emailfile.y"
+                                  { /* No additional output here */ }
 #line 1134 "y.tab.c"
     break;
 
-  case 5: /* expr: expr MUL expr  */
-#line 17 "calculator.y"
-                       {yyval=yyvsp[-2]*yyvsp[0];}
-#line 1140 "y.tab.c"
-    break;
 
-  case 6: /* expr: expr DIV expr  */
-#line 18 "calculator.y"
-                       {yyval=yyvsp[-2]/yyvsp[0];}
-#line 1146 "y.tab.c"
-    break;
-
-  case 7: /* expr: DIGIT  */
-#line 19 "calculator.y"
-              {yyval=yyvsp[0];}
-#line 1152 "y.tab.c"
-    break;
-
-
-#line 1156 "y.tab.c"
+#line 1138 "y.tab.c"
 
       default: break;
     }
@@ -1345,20 +1327,66 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 22 "calculator.y"
+#line 20 "emailfile.y"
+
 
 int main() {
-    printf("Enter the expression:\n");
-    yyparse();
+    FILE *f1, *validFile, *invalidFile;
+    char line[1024];
+
+    f1 = fopen("emailfile.txt", "r");
+    if (f1 == NULL) {
+        printf("Error opening emailfile.txt\n");
+        return 1;
+    }
+
+    // Open files for valid and invalid emails
+    validFile = fopen("valid_emails.txt", "w");
+    if (validFile == NULL) {
+        printf("Error creating valid_emails.txt\n");
+        fclose(f1);
+        return 1;
+    }
+
+    invalidFile = fopen("invalid_emails.txt", "w");
+    if (invalidFile == NULL) {
+        printf("Error creating invalid_emails.txt\n");
+        fclose(f1);
+        fclose(validFile);
+        return 1;
+    }
+
+    // Process each line in emailfile.txt
+    while (fgets(line, sizeof(line), f1)) {
+        // Clear any previous flag value
+        flag = 0;
+
+        // Use yy_scan_string to parse the current line
+        yy_scan_string(line);
+        yyparse();
+
+        // Check if the line was valid or invalid and write to the appropriate file
+        if (flag == 0) {
+            fprintf(validFile, "%s", line);
+            printf("Valid email ID: %s", line);
+        } else {
+            fprintf(invalidFile, "%s", line);
+            printf("Invalid email ID: %s", line);
+        }
+    }
+
+    // Close all files
+    fclose(f1);
+    fclose(validFile);
+    fclose(invalidFile);
+
     return 0;
 }
 
-void yyerror(char *msg)
-{
-    printf("error/n");
-    
+void yyerror(char *msg) {
+    flag = 1;  // Set flag to indicate an invalid email
 }
-int yywrap()
-{
+
+int yywrap() {
     return 1;
 }
